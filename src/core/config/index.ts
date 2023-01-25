@@ -1,16 +1,7 @@
-import {InternalAxiosRequestConfig} from "axios";
+import {_axios} from "./axios";
+import {httpApi} from "./api";
 
-export const injectToken = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    try {
-        const token = localStorage.getItem("access-token");
-        if (token) {
-            config.headers!.Authorization = `Bearer ${token}`;
-        }
-        config.params = {
-            ...config.params
-        }
-        return config;
-    } catch (error: any) {
-        throw new Error(error);
-    }
-};
+export  default {
+    $axios: _axios,
+    $http: httpApi,
+}

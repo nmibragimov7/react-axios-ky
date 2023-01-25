@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
 
 import TodoItem from "../components/TodoItem";
-import {useAxios} from "../core/hooks/useAxios";
+import config from "../core/config";
 import {toast} from "../components/base/BaseToasts/BaseToasts";
 import {Todo} from "../core/types";
 
 const AxiosModify = () => {
-    const { http } = useAxios();
     const [todos, setTodos] = useState<Todo[]>([]);
     const fetchTodos = async () => {
         try {
-            const response = await http.todos();
+            const response = await config.$axios.todos();
             setTodos(response.data);
         } catch (e: any) {
             console.dir(e)

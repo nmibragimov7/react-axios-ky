@@ -36,6 +36,10 @@ export const headers: Readonly<Record<string, string | boolean>> = {
     "X-Requested-With": "XMLHttpRequest",
 };
 
+export interface ResponseWrapper<T = any> {
+    data: T
+}
+
 export interface Todo {
     userId: number;
     id: number;
