@@ -55,7 +55,8 @@ class Http {
                 if (!originalRequest._isRetry) {
                     originalRequest._isRetry = true;
                     try {
-                        originalRequest!.headers = { ...originalRequest!.headers }
+                        originalRequest!.headers = { ...originalRequest!.headers };
+                        // @ts-ignore
                         return this.request(originalRequest);
                     } catch (error: any) {
                         throw new Error(error);
