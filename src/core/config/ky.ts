@@ -1,18 +1,24 @@
 import ky, {ResponsePromise} from "ky";
 import {KyInstance} from "ky/distribution/types/ky";
+
 import {StatusCode} from "../types";
 
 class Ky {
     private baseUrl: string;
     private instance: KyInstance;
+    // controller = new AbortController();
+    private isRetry: boolean = false;
 
     constructor(baseUrl: string = "https://jsonplaceholder.typicode.com/") {
         this.baseUrl = baseUrl;
+        // const {signal} = this.controller;
+
         this.instance = ky.create({
             prefixUrl: this.baseUrl,
             headers: {
                 "content-Type": "application/json; charset=utf-8"
             },
+            // signal,
             hooks: {
                 beforeRequest: [
                     request => {
@@ -26,6 +32,13 @@ class Ky {
                     async (error) => {
                         return await this.handleError(error);
                     }
+                ],
+                afterResponse: [
+                    (_, __, response) => {
+                        if (response.status === 200) {
+                            this.isRetry = false;
+                        }
+                    }
                 ]
             }
         });
@@ -33,7 +46,7 @@ class Ky {
 
     private async handleError(error: any) {
         const { response } = error;
-        const originalRequest = error.options;
+        const options = error.options;
         const url = error.request;
 
         switch (response.status) {
@@ -44,11 +57,15 @@ class Ky {
                 break;
             }
             case StatusCode.Unauthorized: {
-                try {
-                    // refresh()
-                    this.request(originalRequest, url);
-                } catch (error: any) {
-                    throw new Error(error);
+                if (!this.isRetry) {
+                    this.isRetry = true;
+                    // this.controller.abort();
+                    try {
+                        // refresh()
+                        this.request(options, url);
+                    } catch (error: any) {
+                        throw new Error(error);
+                    }
                 }
                 break;
             }
@@ -60,12 +77,10 @@ class Ky {
         return Promise.reject(error);
     }
 
-    request(config: any, url: string): ResponsePromise {
+    request(options: any, url: string): ResponsePromise {
+
         return this.instance(url, {
-            retry: {
-                limit: 1,
-                methods: [config.method]
-            }
+            method: options.method,
         });
     }
 
