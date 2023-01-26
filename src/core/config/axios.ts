@@ -12,7 +12,6 @@ const http = axios.create({
 });
 
 const handleError = (error: any) => {
-    console.dir(error)
     const { response } = error;
     const originalRequest = error.config;
 

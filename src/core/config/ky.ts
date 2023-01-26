@@ -22,11 +22,6 @@ class Ky {
                         }
                     }
                 ],
-                beforeRetry: [
-                    async (options) => {
-                        console.log("beforeRetry", options)
-                    }
-                ],
                 beforeError: [
                     async (error) => {
                         return await this.handleError(error);
@@ -49,15 +44,11 @@ class Ky {
                 break;
             }
             case StatusCode.Unauthorized: {
-                if (!originalRequest._isRetry) {
-                    originalRequest._isRetry = true;
-                    try {
-                        // refresh()
-                        originalRequest!.headers = { ...originalRequest!.headers };
-                        this.request(originalRequest, url);
-                    } catch (error: any) {
-                        throw new Error(error);
-                    }
+                try {
+                    // refresh()
+                    this.request(originalRequest, url);
+                } catch (error: any) {
+                    throw new Error(error);
                 }
                 break;
             }

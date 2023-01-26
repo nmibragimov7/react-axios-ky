@@ -4,7 +4,7 @@ import {_ky_} from "./ky";
 
 export const api = (axios: ModifyAxios) => {
     return {
-        todos: axios.get('todoss'),
+        todos: axios.get('todos'),
         todoById: (id: number) => axios.get(`todos/${id}`)
     }
 }
