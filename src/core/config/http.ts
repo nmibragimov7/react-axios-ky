@@ -1,6 +1,6 @@
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 
-import {ResponseWrapper, StatusCode} from "../types";
+import {StatusCode} from "../types";
 import {injectToken} from "../helpers/injectToken";
 
 const headers: Readonly<Record<string, string | boolean>> = {
@@ -17,7 +17,7 @@ class Http {
         return this.instance != null ? this.instance : this.initHttp();
     }
 
-    constructor(baseUrl: string = "/api/") {
+    constructor(baseUrl: string = "https://jsonplaceholder.typicode.com/") {
         this.baseUrl = baseUrl;
     }
 
@@ -33,7 +33,7 @@ class Http {
         http.interceptors.response.use(
             (response) => response,
             (error) => {
-                return Http.handleError(error);
+                return this.handleError(error);
             }
         );
 
@@ -41,9 +41,10 @@ class Http {
         return http;
     }
 
-    private static async handleError(error: any) {
+    private async handleError(error: any) {
         const { response } = error;
         const originalRequest = error.config;
+
         switch (response.status) {
             case StatusCode.InternalServerError: {
                 break;
@@ -55,8 +56,8 @@ class Http {
                 if (!originalRequest._isRetry) {
                     originalRequest._isRetry = true;
                     try {
+                        // refresh()
                         originalRequest!.headers = { ...originalRequest!.headers };
-                        // @ts-ignore
                         return this.request(originalRequest);
                     } catch (error: any) {
                         throw new Error(error);
@@ -72,15 +73,15 @@ class Http {
         return Promise.reject(error);
     }
 
-    request<T = any, R = AxiosResponse<ResponseWrapper<T>>>(config: AxiosRequestConfig): Promise<R> {
+    request<T = any, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> {
         return this.http.request(config);
     }
 
-    get<T = any, R = AxiosResponse<ResponseWrapper<T>>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+    get<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
         return this.http.get<T, R>(url, config);
     }
 
-    post<T = any, R = AxiosResponse<ResponseWrapper<T>>>(
+    post<T = any, R = AxiosResponse<T>>(
         url: string,
         data?: T,
         config?: AxiosRequestConfig
@@ -88,7 +89,7 @@ class Http {
         return this.http.post<T, R>(url, data, config);
     }
 
-    put<T = any, R = AxiosResponse<ResponseWrapper<T>>>(
+    put<T = any, R = AxiosResponse<T>>(
         url: string,
         data?: T,
         config?: AxiosRequestConfig
@@ -96,9 +97,9 @@ class Http {
         return this.http.put<T, R>(url, data, config);
     }
 
-    delete<T = any, R = AxiosResponse<ResponseWrapper<T>>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+    delete<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
         return this.http.delete<T, R>(url, config);
     }
 }
 
-export const _http = new Http();
+export const http = new Http();

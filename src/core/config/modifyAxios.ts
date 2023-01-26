@@ -29,7 +29,7 @@ export const modifyAxios = (axios: AxiosInstance) => {
                         params: query,
                         headers,
                         })
-                        .then((response: any) => {
+                        .then((response: any)  => {
                             resolve(onSuccess(response))
                         })
                         .catch((error: any) => {

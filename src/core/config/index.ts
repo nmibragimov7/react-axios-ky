@@ -1,7 +1,8 @@
 import {_axios} from "./axios";
-import {httpApi} from "./api";
+import {_http, _ky} from "./api";
 
 export  default {
     $axios: _axios,
-    $http: httpApi,
+    $http: _http,
+    $ky: _ky
 }

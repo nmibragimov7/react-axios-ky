@@ -14,7 +14,7 @@ export type IRequestWrapper = (
         onError(res: any): void
         onFinally(): void
     }>
-) => Promise<any>
+) => Promise<any>;
 
 export type AxiosMethods = 'get' | 'post' | 'patch' | 'put' | 'delete';
 
@@ -35,10 +35,6 @@ export const headers: Readonly<Record<string, string | boolean>> = {
     "Access-Control-Allow-Credentials": true,
     "X-Requested-With": "XMLHttpRequest",
 };
-
-export interface ResponseWrapper<T = any> {
-    data: T
-}
 
 export interface Todo {
     userId: number;
