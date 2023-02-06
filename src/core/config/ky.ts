@@ -74,7 +74,7 @@ class Ky {
             }
         }
 
-        return Promise.reject(error);
+        return Promise.reject(await error.response.json());
     }
 
     request(options: any, url: string): ResponsePromise {

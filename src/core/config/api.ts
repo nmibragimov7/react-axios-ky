@@ -15,6 +15,6 @@ export const _http = {
 }
 
 export const _ky = {
-    todos: (config: any): any => _ky_.get('todos', config),
+    todos: (config: any): any => _ky_.get('todoss', config),
     todoById: (id: number) => _ky_.get(`todos/${id}`)
 }
